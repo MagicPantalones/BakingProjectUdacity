@@ -72,3 +72,13 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
+/.idea/vcs.xml
+/gradle/wrapper/gradle-wrapper.properties
+/gradle.properties
+!/gradle/wrapper/gradle-wrapper.properties
+/.idea/dbnavigator.xml
+/gradle/wrapper/gradle-wrapper.jar
+/app/proguard-rules.pro
+/.idea/misc.xml
+/.idea/codeStyles/Project.xml
+/.idea/runConfigurations.xml
