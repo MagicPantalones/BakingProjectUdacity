@@ -43,6 +43,8 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${supportLibVer}"
     implementation "com.android.support:recyclerview-v7:${supportLibVer}"
     implementation "com.android.support:cardview-v7:${supportLibVer}"
+    implementation "com.android.support:support-v4:${supportLibVer}"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
