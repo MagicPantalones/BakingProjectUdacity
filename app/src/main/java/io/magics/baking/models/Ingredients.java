@@ -1,4 +1,4 @@
-package io.magics.baking;
+package io.magics.baking.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

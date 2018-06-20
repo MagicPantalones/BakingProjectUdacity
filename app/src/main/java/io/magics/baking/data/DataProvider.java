@@ -1,4 +1,4 @@
-package io.magics.baking;
+package io.magics.baking.data;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.List;
+
+import io.magics.baking.models.Recipe;
 
 public class DataProvider {
 
