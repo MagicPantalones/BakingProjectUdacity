@@ -82,3 +82,6 @@ fastlane/readme.md
 /.idea/misc.xml
 /.idea/codeStyles/Project.xml
 /.idea/runConfigurations.xml
+/app/sampledata/
+libs/
+sampledata/

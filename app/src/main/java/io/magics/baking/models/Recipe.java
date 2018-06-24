@@ -3,14 +3,15 @@ package io.magics.baking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Recipe implements Parcelable{
 
     private double id;
     private String name;
-    private List<Ingredients> ingredients;
-    private List<Steps> steps;
+    private List<Ingredient> ingredients = new ArrayList<>();
+    private List<Step> steps = new ArrayList<>();
     private double servings;
     private String image;
 
@@ -29,8 +30,8 @@ public class Recipe implements Parcelable{
     public Recipe(Parcel in) {
         this.id = (double) in.readValue(double.class.getClassLoader());
         this.name = (String) in.readValue(String.class.getClassLoader());
-        in.readList(this.ingredients, Ingredients.class.getClassLoader());
-        in.readList(this.steps, Steps.class.getClassLoader());
+        in.readList(this.ingredients, Ingredient.class.getClassLoader());
+        in.readList(this.steps, Step.class.getClassLoader());
         this.servings = (double) in.readValue(double.class.getClassLoader());
         this.image = (String) in.readValue(String.class.getClassLoader());
     }
@@ -39,8 +40,8 @@ public class Recipe implements Parcelable{
 
     public double getId() { return id; }
     public String getName() { return name; }
-    public List<Ingredients> getIngredients() { return ingredients; }
-    public List<Steps> getSteps() { return steps; }
+    public List<Ingredient> getIngredients() { return ingredients; }
+    public List<Step> getSteps() { return steps; }
     public double getServings() { return servings; }
     public String getImage() { return image; }
 

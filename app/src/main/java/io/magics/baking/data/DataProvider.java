@@ -16,6 +16,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import io.magics.baking.models.Recipe;
+import timber.log.Timber;
 
 public class DataProvider {
 
@@ -48,13 +49,16 @@ public class DataProvider {
                 if (recipes == null || recipes.isEmpty()) {
                     Toast.makeText(context, "Error while reading JSON file", Toast.LENGTH_LONG)
                             .show();
+                    Timber.w("Error while reading JSON file");
                 } else {
                     viewModel.addRecipies(recipes);
+                    Timber.w("Recipes loaded, first: %s", recipes.get(0).getName());
                 }
             }
 
         } catch (IOException e) {
             Toast.makeText(context, "Could not read JSON file", Toast.LENGTH_LONG).show();
+            Timber.w("Could not read JSON file");
         }
     }
 

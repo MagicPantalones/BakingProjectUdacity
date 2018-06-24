@@ -3,7 +3,7 @@ package io.magics.baking.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Steps implements Parcelable {
+public class Step implements Parcelable {
 
     private double id;
     private String shortDescription;
@@ -11,19 +11,20 @@ public class Steps implements Parcelable {
     private String videoURL;
     private String thumbnailURL;
 
-    public static final Parcelable.Creator<Steps> CREATOR = new Creator<Steps>() {
+    public static final Parcelable.Creator<Step> CREATOR = new Creator<Step>() {
         @Override
-        public Steps createFromParcel(Parcel source) {
-            return new Steps(source);
+        public Step createFromParcel(Parcel source) {
+            return new Step(source);
         }
 
         @Override
-        public Steps[] newArray(int size) {
-            return new Steps[size];
+        public Step[] newArray(int size) {
+            return new Step[size];
         }
     };
 
-    public Steps(Parcel in) {
+    @SuppressWarnings("WeakerAccess")
+    public Step(Parcel in) {
         this.id = (double) in.readValue(double.class.getClassLoader());
         this.shortDescription = (String) in.readValue(String.class.getClassLoader());
         this.description = (String) in.readValue(String.class.getClassLoader());

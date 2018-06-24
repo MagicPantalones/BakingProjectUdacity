@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="fill"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/bullet_point"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/donut_only_icon_56pt"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/ingredient_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="8dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        android:textSize="14sp"
+        android:lines="2"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toBottomOf="@+id/bullet_point"
+        app:layout_constraintStart_toEndOf="@+id/bullet_point"
+        app:layout_constraintTop_toTopOf="@+id/bullet_point"
+        tools:text="4 tblsp vanilla extract, divided" />
+
+</android.support.constraint.ConstraintLayout>
