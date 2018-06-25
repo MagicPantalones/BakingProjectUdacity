@@ -13,6 +13,11 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.util.ArrayList;
@@ -41,11 +46,14 @@ public class StepDetailFragment extends Fragment {
     @BindView(R.id.step_long_description)
     TextView stepDescriptionTv;
 
-
     private Step step;
     private List<Ingredient> ingredients;
-
+    private SimpleExoPlayer player;
     Unbinder unbinder;
+
+    private boolean playWhenReady;
+    private int currentWindow;
+    private long playbackPos;
 
     public StepDetailFragment() {
         // Required empty public constructor
@@ -85,11 +93,52 @@ public class StepDetailFragment extends Fragment {
         if (!ingredients.isEmpty()) gridView.setAdapter(new IngredientsGridAdapter());
         else gridView.setVisibility(View.GONE);
 
-        playerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),
-                R.drawable.baking_logo_long));
-        playerView.setUseArtwork(true);
+
         stepHeaderTv.setText(step.getShortDescription());
         stepDescriptionTv.setText(step.getDescription());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initializePlayer();
+    }
+
+    private void initializePlayer() {
+
+        player = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(getContext()),
+                new DefaultTrackSelector(),
+                new DefaultLoadControl()
+        );
+
+        playerView.setPlayer(player);
+
+        player.setPlayWhenReady(playWhenReady);
+        player.seekTo(currentWindow, playbackPos);
+
+        if (step.getVideoURL().isEmpty() && step.getThumbnailURL().isEmpty()) {
+            playerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.baking_logo_long));
+            playerView.setUseArtwork(true);
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        releasePlayer();
+        super.onPause();
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            playbackPos = player.getContentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playWhenReady = player.getPlayWhenReady();
+            player.release();
+            player = null;
+        }
     }
 
     @Override
@@ -97,6 +146,8 @@ public class StepDetailFragment extends Fragment {
         BakingUtils.dispose(unbinder);
         super.onDestroyView();
     }
+
+
 
 
     class IngredientsGridAdapter extends BaseAdapter {

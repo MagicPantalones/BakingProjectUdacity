@@ -85,3 +85,6 @@ fastlane/readme.md
 /app/sampledata/
 libs/
 sampledata/
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/sonarlint-state.xml
+/.idea/sonarlint.xml

@@ -22,6 +22,12 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements RecipesListFragment.RecipeListener,
         RecipeIngredientsFragment.StepListListener{
 
+    //Todo ExoPlayer implementation
+    //Todo Lifecycle handling
+    //Todo Transitions
+    //Todo Widget
+    //Todo OrientationLayout & TabletLayout
+
     private static final int FRAG_CONTAINER = R.id.container_main;
 
     private static int stepIndex;
