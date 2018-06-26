@@ -22,9 +22,8 @@ import io.magics.baking.ui.ViewPagerFragment;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements RecipesListFragment.RecipeListener,
-        RecipeIngredientsFragment.StepListListener, ViewPagerFragment.RecipePagerListener{
+        RecipeIngredientsFragment.StepListListener, ViewPagerFragment.RecipePagerListener {
 
-    //Todo Lifecycle handling
     //Todo Transitions
     //Todo Widget
     //Todo OrientationLayout & TabletLayout
@@ -119,5 +118,13 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         if (actionBar != null) actionBar.hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void onPortrait() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.show();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
     }
 }

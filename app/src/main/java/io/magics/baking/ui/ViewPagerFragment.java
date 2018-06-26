@@ -144,6 +144,7 @@ public class ViewPagerFragment extends Fragment {
 
     public interface RecipePagerListener {
         void onLandscape();
+        void onPortrait();
     }
 
 

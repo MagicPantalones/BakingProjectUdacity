@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ingredients_list_card_wrapper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:layout_marginBottom="4dp"
+    android:animateLayoutChanges="true"
+    app:cardCornerRadius="@dimen/cardview_default_radius"
+    app:cardElevation="@dimen/cardview_default_elevation"
+    app:contentPaddingLeft="8dp"
+    app:contentPaddingRight="8dp"
+    app:contentPaddingTop="8dp"
+    tools:context=".ui.RecipeIngredientsFragment">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <ListView
+            android:id="@+id/steps_ingredients_list_collapsed"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="@android:color/darker_gray"
+            android:dividerHeight="1dp"
+            android:listSelector="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guider"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/steps_ingredients_header"
+            tools:listitem="@layout/simple_ingredient_list_item" />
+
+        <TextView
+            android:id="@+id/steps_ingredients_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/ingredients_header"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/steps_steps_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/steps_header"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="@+id/guider"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <android.support.constraint.Guideline
+            android:id="@+id/guider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/guider"
+            app:layout_constraintTop_toBottomOf="@+id/steps_steps_header"
+            app:layout_constraintVertical_bias="1.0">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/steps_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/steps_steps_header"
+                tools:listitem="@layout/view_holder_steps_list" />
+
+
+        </ScrollView>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

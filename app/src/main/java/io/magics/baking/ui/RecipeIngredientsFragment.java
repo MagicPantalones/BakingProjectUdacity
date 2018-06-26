@@ -37,13 +37,13 @@ public class RecipeIngredientsFragment extends Fragment {
 
     @BindView(R.id.steps_ingredients_list_collapsed)
     ListView listViewCollapsed;
-    @BindView(R.id.steps_ingredients_list_expanded)
+    @Nullable @BindView(R.id.steps_ingredients_list_expanded)
     ListView listViewExpanded;
-    @BindView(R.id.steps_ingredients_toggle)
+    @Nullable @BindView(R.id.steps_ingredients_toggle)
     ImageView listToggleButton;
     @BindView(R.id.ingredients_list_card_wrapper)
     CardView listWrapper;
-    @BindView(R.id.collapse_expand_header)
+    @Nullable @BindView(R.id.collapse_expand_header)
     View expandedListHeader;
     @BindView(R.id.steps_list)
     RecyclerView stepsRecycler;
@@ -87,26 +87,33 @@ public class RecipeIngredientsFragment extends Fragment {
         return root;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setLists();
-        listViewCollapsed.setAdapter(collapsedAdapter);
-        listViewExpanded.setAdapter(expandedAdapter);
 
-        listToggleButton.setOnClickListener(v -> {
-            boolean isShown = listViewExpanded.isShown();
-            listViewExpanded.setVisibility(isShown ? View.GONE : View.VISIBLE);
-            expandedListHeader.setVisibility(isShown ? View.GONE : View.VISIBLE);
-            if (!isShown) {
-                toggleAnimation =
-                        (AnimatedVectorDrawable) listToggleButton.getDrawable();
-                toggleAnimation.mutate();
-                toggleAnimation.start();
-            } else {
-                listToggleButton.setImageResource(R.drawable.show_more_anim);
-            }
-        });
+
+        if (listViewExpanded != null) {
+            listViewCollapsed.setAdapter(collapsedAdapter);
+            listViewExpanded.setAdapter(expandedAdapter);
+
+            listToggleButton.setOnClickListener(v -> {
+                boolean isShown = listViewExpanded.isShown();
+                listViewExpanded.setVisibility(isShown ? View.GONE : View.VISIBLE);
+                expandedListHeader.setVisibility(isShown ? View.GONE : View.VISIBLE);
+                if (!isShown) {
+                    toggleAnimation =
+                            (AnimatedVectorDrawable) listToggleButton.getDrawable();
+                    toggleAnimation.mutate();
+                    toggleAnimation.start();
+                } else {
+                    listToggleButton.setImageResource(R.drawable.show_more_anim);
+                }
+            });
+        } else {
+            listViewCollapsed.setAdapter(expandedAdapter);
+        }
 
         RecipeStepAdapter adapter = new RecipeStepAdapter(stepListListener);
         stepsRecycler.setAdapter(adapter);
@@ -136,15 +143,17 @@ public class RecipeIngredientsFragment extends Fragment {
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
             Ingredient ingredient = recipe.getIngredients().get(i);
 
-            if (i < MAX_LIST_LINES_COLLAPSED) {
+            if (i < MAX_LIST_LINES_COLLAPSED && listToggleButton != null) {
                 collapsedIngredients.add(BakingUtils.formatIngredientText(getContext(), ingredient));
             } else {
                 allIngredients.add(BakingUtils.formatIngredientText(getContext(), ingredient));
             }
         }
 
-        collapsedAdapter = new ArrayAdapter<>(getContext(), R.layout.simple_ingredient_list_item,
-                collapsedIngredients);
+        if (listViewExpanded != null) {
+            collapsedAdapter = new ArrayAdapter<>(getContext(), R.layout.simple_ingredient_list_item,
+                    collapsedIngredients);
+        }
         expandedAdapter = new ArrayAdapter<>(getContext(), R.layout.simple_ingredient_list_item,
                 allIngredients);
 
