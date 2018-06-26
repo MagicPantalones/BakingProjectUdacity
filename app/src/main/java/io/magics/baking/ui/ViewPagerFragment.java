@@ -97,6 +97,7 @@ public class ViewPagerFragment extends Fragment {
         });
 
         if (prevTv != null) {
+            if (listener != null) listener.onPortrait();
             prevTv.setOnClickListener(v -> {
                 if (prevTv.isShown()) {
                     viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);

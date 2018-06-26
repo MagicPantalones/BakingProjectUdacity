@@ -159,17 +159,8 @@ public class RecipeIngredientsFragment extends Fragment {
 
     }
 
-    public void prepareScrollBeforeTransition(ScrollEndedListener listener) {
-        LinearLayoutManager manager = (LinearLayoutManager) stepsRecycler.getLayoutManager();
-
-    }
-
     public interface StepListListener {
         void onStepClicked(View view, Recipe recipe, int pos);
-    }
-
-    public interface ScrollEndedListener {
-        void scrollFinished();
     }
 
 

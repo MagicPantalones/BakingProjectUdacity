@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.transition.Fade;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -24,9 +25,9 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements RecipesListFragment.RecipeListener,
         RecipeIngredientsFragment.StepListListener, ViewPagerFragment.RecipePagerListener {
 
-    //Todo Transitions
     //Todo Widget
-    //Todo OrientationLayout & TabletLayout
+    //Todo TabletLayout
+    //Todo Tests
 
     private static final int FRAG_CONTAINER = R.id.container_main;
 
@@ -52,8 +53,6 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-
-
         if (dataProvider == null) {
             dataProvider = new DataProvider(this, viewModel);
         }
@@ -63,8 +62,13 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         Fragment fragment = getSupportFragmentManager().findFragmentById(FRAG_CONTAINER);
 
         if (fragment == null) {
+            RecipesListFragment frag = RecipesListFragment.newInstance();
+
+            frag.setEnterTransition(new Fade());
+            frag.setReenterTransition(new Fade());
+
             getSupportFragmentManager().beginTransaction()
-                    .add(FRAG_CONTAINER, RecipesListFragment.newInstance())
+                    .add(FRAG_CONTAINER, frag)
                     .commit();
         }
 
@@ -86,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     @Override
     public void onRecipeClick(Recipe recipe) {
         RecipeIngredientsFragment fragment = RecipeIngredientsFragment.newInstance(recipe);
+        fragment.setEnterTransition(new Fade());
+        fragment.setReenterTransition(new Fade());
         getSupportFragmentManager().beginTransaction()
                 .replace(FRAG_CONTAINER, fragment)
                 .addToBackStack(null)
@@ -97,11 +103,11 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         setStepIndex(pos);
 
         ViewPagerFragment fragment = ViewPagerFragment.newInstance(recipe);
-
+        fragment.setEnterTransition(new Fade());
+        fragment.setReenterTransition(new Fade());
 
         getSupportFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .addSharedElement(view, view.getTransitionName())
                 .addToBackStack(null)
                 .replace(FRAG_CONTAINER, fragment)
                 .commit();
