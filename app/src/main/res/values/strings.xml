@@ -18,4 +18,7 @@
 
     <string name="description_fallback_intro">Recipe Introduction</string>
 
+    <string name="volume_on_a11y">Volume on.</string>
+    <string name="volume_off_a11y">Volume off.</string>
+
 </resources>

@@ -14,41 +14,87 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="bottom"
     android:layoutDirection="ltr"
-    android:background="#CC404040"
     android:orientation="vertical">
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:paddingTop="4dp"
         android:orientation="horizontal">
 
-        <ImageButton android:id="@id/exo_prev"
-            style="@style/ExoMediaButton.Previous"/>
+        <ImageButton
+            android:id="@id/exo_prev"
+            style="@style/ExoMediaButton.Previous"
+            android:layout_height="48dp"
+            android:padding="12dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_replay"
+            android:tint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
-        <ImageButton android:id="@id/exo_play"
+        <View
+            android:id="@+id/replay_background"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/button_background"
+            app:layout_constraintBottom_toBottomOf="@id/exo_prev"
+            app:layout_constraintStart_toStartOf="@id/exo_prev"
+            app:layout_constraintTop_toTopOf="@id/exo_prev"
+            app:layout_constraintEnd_toEndOf="@id/exo_prev"/>
+
+        <ImageButton
+            android:id="@id/exo_play"
             style="@style/ExoMediaButton.Play"
+            android:layout_height="56dp"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_play_button"
-            android:scaleType="fitCenter"
-            android:tint="@color/colorPrimaryDark"/>
+            android:tint="@color/colorAccent"
+            android:layout_marginStart="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton android:id="@id/exo_pause"
+        <ImageButton
+            android:id="@id/exo_pause"
             style="@style/ExoMediaButton.Pause"
+            android:layout_height="56dp"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             android:src="@drawable/ic_pause"
-            android:scaleType="fitCenter"
-            android:tint="@color/colorPrimaryDark"/>
+            android:tint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <View
+            android:id="@+id/play_pause_background"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/button_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </android.support.constraint.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:id="@+id/time_bar_layout"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -66,6 +112,13 @@
             android:id="@id/exo_progress"
             android:layout_width="0dp"
             android:layout_weight="1"
+            app:scrubber_disabled_size="0dp"
+            app:scrubber_enabled_size="0dp"
+            app:scrubber_dragged_size="12dp"
+            app:scrubber_color="@color/colorAccent"
+            app:buffered_color="@color/colorPrimaryDark"
+            app:unplayed_color="#80404040"
+            app:played_color="@color/colorPrimary"
             android:layout_height="26dp"/>
 
         <TextView android:id="@id/exo_duration"

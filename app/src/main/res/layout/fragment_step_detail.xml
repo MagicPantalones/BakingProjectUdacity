@@ -1,94 +1,199 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.StepDetailFragment">
+    tools:context=".ui.StepDetailFragment"
+    android:background="@android:color/white">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/recipe_video_player"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:animateLayoutChanges="true"
+        app:controller_layout_id="@layout/custom_player_controller"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:resize_mode="fill"
+        app:show_timeout="2000" />
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/volume_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/recipe_video_player"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            app:controller_layout_id="@layout/custom_player_controller"
+        <ImageButton
+            android:id="@+id/volume_on_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/volume_on_a11y"
+            android:padding="14dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_volume_on"
+            android:tint="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/no_video_placeholder"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"
-            android:src="@drawable/baking_no_icon_logo_112pt_by_56pt"
+        <ImageButton
+            android:id="@+id/volume_off_btn"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/volume_off_a11y"
+            android:padding="14dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_volume_off"
+            android:tint="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/detail_ingredient_grid"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-
-        <GridView
-            android:id="@+id/detail_ingredient_grid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:numColumns="2"
-            android:padding="8dp"
-            android:scrollbarStyle="outsideOverlay"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipe_video_player"
-            tools:listitem="@layout/simple_view_holder_ingredient"
-            tools:layout_height="1dp"/>
-
-        <TextView
-            android:id="@+id/step_description_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:paddingTop="8dp"
-            android:textAlignment="center"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_ingredient_grid"
-            tools:text="@sample/baking.json/data/steps/shortDescription" />
-
-        <TextView
-            android:id="@+id/step_long_description"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:padding="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/step_description_header"
-            tools:text="11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature." />
-
-        <ImageView
-            android:id="@+id/no_description_image"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="8dp"
-            android:alpha="0.2"
-            android:src="@drawable/baking_logo_long"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipe_video_player"
-            tools:ignore="ContentDescription" />
+        <View
+            android:id="@+id/volume_on_off_background"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/button_background"
+            app:layout_constraintBottom_toTopOf="@+id/volume_on_btn"
+            app:layout_constraintEnd_toStartOf="@+id/volume_on_btn"
+            app:layout_constraintStart_toEndOf="@+id/volume_on_btn"
+            app:layout_constraintTop_toBottomOf="@+id/volume_on_btn" />
     </android.support.constraint.ConstraintLayout>
 
+    <ImageButton
+        android:id="@+id/replay_btn"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/exo_controls_play_description"
+        android:src="@drawable/ic_replay"
+        android:tint="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recipe_video_player"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</android.support.v7.widget.CardView>
+    <View
+        android:id="@+id/replay_btn_background"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/button_background"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/replay_btn"
+        app:layout_constraintEnd_toStartOf="@+id/replay_btn"
+        app:layout_constraintStart_toEndOf="@+id/replay_btn"
+        app:layout_constraintTop_toBottomOf="@+id/replay_btn" />
+
+    <ProgressBar
+        android:id="@+id/buffering_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/step_details_wrapper"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/no_video_placeholder"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:src="@drawable/baking_logo_image_large"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/recipe_video_player"
+        app:layout_constraintStart_toStartOf="@+id/recipe_video_player"
+        app:layout_constraintTop_toTopOf="@+id/recipe_video_player"
+        tools:ignore="ContentDescription" />
+
+    <View
+        android:id="@+id/frame_separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@color/colorAccent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/no_video_placeholder" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/step_details_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="@dimen/cardview_default_radius"
+        app:cardElevation="@dimen/cardview_default_elevation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recipe_video_player">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <GridView
+                android:id="@+id/detail_ingredient_grid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:numColumns="2"
+                android:padding="8dp"
+                android:scrollbarStyle="outsideOverlay"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_height="1dp"
+                tools:listitem="@layout/simple_view_holder_ingredient" />
+
+            <TextView
+                android:id="@+id/step_description_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
+                android:paddingTop="8dp"
+                android:textAlignment="center"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_ingredient_grid"
+                tools:text="@sample/baking.json/data/steps/shortDescription" />
+
+            <TextView
+                android:id="@+id/step_long_description"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:padding="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/step_description_header"
+                tools:text="11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature." />
+
+            <ImageView
+                android:id="@+id/no_description_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:alpha="0.2"
+                android:src="@drawable/baking_logo_long"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+
+</android.support.constraint.ConstraintLayout>

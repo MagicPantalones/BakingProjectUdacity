@@ -1,7 +1,6 @@
 package io.magics.baking.ui;
 
 import android.annotation.SuppressLint;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,13 +11,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -26,12 +27,9 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,20 +48,40 @@ public class StepDetailFragment extends Fragment {
     private static final String ARG_STEP = "step";
     private static final String ARG_INGREDIENTS = "ingredients";
 
+    private static final String KEY_CURR_WINDOW = "currentWindow";
+    private static final String KEY_PLAY_POSITION = "playbackPosition";
+    private static final String KEY_CURR_VOLUME = "currentVolume";
+    private static final String KEY_READY = "playWhenReady";
+    private static final String KEY_STEP = "step";
+
     private static final String USER_AGENT = "baking-app";
 
     @BindView(R.id.recipe_video_player)
     PlayerView playerView;
-    @BindView(R.id.detail_ingredient_grid)
+    @Nullable @BindView(R.id.detail_ingredient_grid)
     GridView gridView;
-    @BindView(R.id.step_description_header)
+    @Nullable @BindView(R.id.step_description_header)
     TextView stepHeaderTv;
-    @BindView(R.id.step_long_description)
+    @Nullable @BindView(R.id.step_long_description)
     TextView stepDescriptionTv;
-    @BindView(R.id.no_description_image)
+    @Nullable @BindView(R.id.no_description_image)
     ImageView noDescriptionIv;
     @BindView(R.id.no_video_placeholder)
     ImageView noVideoPlaceholder;
+    @BindView(R.id.volume_on_btn)
+    ImageButton volumeOnBtn;
+    @BindView(R.id.volume_off_btn)
+    ImageButton volumeOffBtn;
+    @Nullable @BindView(R.id.frame_separator)
+    View frameSeparator;
+    @BindView(R.id.volume_wrapper)
+    ViewGroup volumeWrapper;
+    @BindView(R.id.replay_btn)
+    ImageButton replayBtn;
+    @BindView(R.id.buffering_pb)
+    ProgressBar bufferingBar;
+    @BindView(R.id.replay_btn_background)
+    View replayBtnBackground;
 
     private Step step;
     private List<Ingredient> ingredients;
@@ -74,7 +92,12 @@ public class StepDetailFragment extends Fragment {
     private boolean playWhenReady = false;
     private int currentWindow;
     private long playbackPos;
-    private float currentVolume;
+    private float currentVolume = -1.0f;
+
+    enum Volume {
+        VOLUME_ON,
+        VOLUME_OFF
+    }
 
     public StepDetailFragment() {
         // Required empty public constructor
@@ -105,25 +128,40 @@ public class StepDetailFragment extends Fragment {
         unbinder = ButterKnife.bind(this, root);
         playerListener = new PlayerListener();
 
+        if (savedInstanceState != null && savedInstanceState.getParcelable(KEY_STEP) != null) {
+            playWhenReady = savedInstanceState.getBoolean(KEY_READY);
+            currentWindow = savedInstanceState.getInt(KEY_CURR_WINDOW);
+            playbackPos = savedInstanceState.getLong(KEY_PLAY_POSITION);
+            currentVolume = savedInstanceState.getFloat(KEY_CURR_VOLUME);
+            step = savedInstanceState.getParcelable(KEY_STEP);
+        }
+
         return root;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (!ingredients.isEmpty()) gridView.setAdapter(new IngredientsGridAdapter());
-        else gridView.setVisibility(View.GONE);
+        if (stepDescriptionTv != null) {
+            if (!ingredients.isEmpty()) gridView.setAdapter(new IngredientsGridAdapter());
+            else gridView.setVisibility(View.GONE);
 
-        if ((int) step.getId() == 0) {
-            stepDescriptionTv.setVisibility(View.GONE);
-            stepHeaderTv.setVisibility(View.GONE);
-            noDescriptionIv.setVisibility(View.VISIBLE);
+            if ((int) step.getId() == 0) {
+                stepDescriptionTv.setVisibility(View.GONE);
+                stepHeaderTv.setVisibility(View.GONE);
+                noDescriptionIv.setVisibility(View.VISIBLE);
+            }
+
+            stepHeaderTv.setText(step.getShortDescription());
+            stepDescriptionTv.setText(step.getDescription());
         }
 
+        volumeOnBtn.setOnClickListener(v -> toggleMute(Volume.VOLUME_OFF));
+        volumeOffBtn.setOnClickListener(v -> toggleMute(Volume.VOLUME_ON));
+        replayBtn.setOnClickListener(v -> playAgain());
 
-        stepHeaderTv.setText(step.getShortDescription());
-        stepDescriptionTv.setText(step.getDescription());
     }
 
     @Override
@@ -149,6 +187,11 @@ public class StepDetailFragment extends Fragment {
             );
 
             playerView.setPlayer(player);
+            playerView.setControllerAutoShow(false);
+
+            if (currentVolume == -1.0f) {
+                currentVolume = 1.0f;
+            }
 
             player.setVolume(currentVolume);
             player.setPlayWhenReady(playWhenReady);
@@ -161,7 +204,7 @@ public class StepDetailFragment extends Fragment {
                 movieUri = Uri.parse(step.getVideoURL());
             }
             player.addListener(playerListener);
-            player.prepare(buildMediaSource(movieUri), true, false);
+            player.prepare(buildMediaSource(movieUri), false, false);
         }
     }
 
@@ -182,23 +225,33 @@ public class StepDetailFragment extends Fragment {
         super.onStop();
     }
 
-    public void toggleMute(View v) {
+    private void toggleMute(Volume volume) {
         if (player == null) return;
 
-        if (player.getVolume() != 0f) {
+        if (volume == Volume.VOLUME_OFF) {
             currentVolume = player.getVolume();
             player.setVolume(0f);
+            volumeOnBtn.setVisibility(View.INVISIBLE);
+            volumeOffBtn.setVisibility(View.VISIBLE);
         } else {
             player.setVolume(currentVolume);
+            volumeOnBtn.setVisibility(View.VISIBLE);
+            volumeOffBtn.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void playAgain() {
+        if (player != null) {
+            playWhenReady = true;
+            player.seekTo(0);
+            player.setPlayWhenReady(true);
+            replayBtn.setVisibility(View.GONE);
+            replayBtnBackground.setVisibility(View.GONE);
         }
     }
 
     private void releasePlayer() {
         if (player != null) {
-            playbackPos = player.getContentPosition();
-            currentWindow = player.getCurrentWindowIndex();
-            playWhenReady = player.getPlayWhenReady();
-            currentVolume = player.getVolume();
             player.removeListener(playerListener);
             player.release();
             player = null;
@@ -207,54 +260,78 @@ public class StepDetailFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(KEY_STEP, step);
+        outState.putBoolean(KEY_READY, player.getPlayWhenReady());
+        outState.putInt(KEY_CURR_WINDOW, player.getCurrentWindowIndex());
+        outState.putLong(KEY_PLAY_POSITION, player.getContentPosition());
+        outState.putFloat(KEY_CURR_VOLUME, player.getVolume());
+    }
+
+    @Override
+    public void onDetach() {
         BakingUtils.dispose(unbinder);
-        super.onDestroyView();
+        super.onDetach();
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-
+        playWhenReady = isVisibleToUser;
         if (player != null) {
-            player.setPlayWhenReady(isVisibleToUser);
+            player.setPlayWhenReady(playWhenReady);
         }
     }
+
+
 
     private class PlayerListener extends SimpleExoPlayer.DefaultEventListener {
 
         @Override
         public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-            String state;
             switch (playbackState) {
-                case Player.STATE_IDLE:
-                    state = "ExoPlayer.STATE_IDLE      -";
-                    break;
                 case Player.STATE_BUFFERING:
-                    state = "ExoPlayer.STATE_BUFFERING -";
+                    if (playWhenReady) {
+                        bufferingBar.setVisibility(View.VISIBLE);
+                    }
                     break;
                 case Player.STATE_READY:
-                    state = "ExoPlayer.STATE_READY     -";
+                    if (noVideoPlaceholder.getVisibility() == View.VISIBLE) {
+                        noVideoPlaceholder.setVisibility(View.GONE);
+                        volumeWrapper.setVisibility(View.VISIBLE);
+                        if (frameSeparator != null) frameSeparator.setVisibility(View.GONE);
+                    }
+                    if (playWhenReady && bufferingBar.getVisibility() == View.VISIBLE) {
+                        bufferingBar.setVisibility(View.GONE);
+                    }
+                    playerView.showController();
                     break;
                 case Player.STATE_ENDED:
-                    state = "ExoPlayer.STATE_ENDED     -";
+                    playerView.hideController();
+                    replayBtn.setVisibility(View.VISIBLE);
+                    replayBtnBackground.setVisibility(View.VISIBLE);
+                    if (bufferingBar.getVisibility() == View.VISIBLE) {
+                        bufferingBar.setVisibility(View.GONE);
+                    }
                     break;
                 default:
-                    state = "UNKNOWN_STATE             -";
+                    //Do nothing for other states.
                     break;
             }
-            Timber.w(state);
         }
 
         @Override
         public void onPlayerError(ExoPlaybackException error) {
             if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                if (error.getSourceException().getCause() instanceof UnknownHostException) {
-                    Timber.e("No Internet!!! :D");
-                } else if (error.getSourceException().getCause() instanceof MalformedURLException) {
-                    Timber.e("No URL to connect to D:");
+                    playerView.setUseController(false);
+                    volumeWrapper.setVisibility(View.GONE);
+                    playerView.setShutterBackgroundColor(getResources()
+                            .getColor(android.R.color.white));
+                    noVideoPlaceholder.setVisibility(View.VISIBLE);
+                    if (frameSeparator != null) frameSeparator.setVisibility(View.VISIBLE);
                 }
-            }
+            if (bufferingBar.getVisibility() == View.VISIBLE) bufferingBar.setVisibility(View.GONE);
             super.onPlayerError(error);
         }
     }

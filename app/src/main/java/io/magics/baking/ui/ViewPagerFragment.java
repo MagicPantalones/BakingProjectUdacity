@@ -1,6 +1,7 @@
 package io.magics.baking.ui;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,15 +33,16 @@ public class ViewPagerFragment extends Fragment {
 
     @BindView(R.id.steps_view_pager)
     NestedFragViewPager viewPager;
-    @BindView(R.id.view_pager_prev)
+    @Nullable @BindView(R.id.view_pager_prev)
     TextView prevTv;
-    @BindView(R.id.view_pager_next)
+    @Nullable @BindView(R.id.view_pager_next)
     TextView nextTv;
-    @BindView(R.id.view_pager_introduction)
+    @Nullable @BindView(R.id.view_pager_introduction)
     TextView pageTv;
 
     private Recipe recipe;
     private StepsViewPagerAdapter adapter;
+    private RecipePagerListener listener;
 
     Unbinder unbinder;
 
@@ -74,6 +76,7 @@ public class ViewPagerFragment extends Fragment {
         return root;
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -84,6 +87,7 @@ public class ViewPagerFragment extends Fragment {
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(MainActivity.getStepIndex());
+
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
@@ -92,28 +96,31 @@ public class ViewPagerFragment extends Fragment {
             }
         });
 
-        prevTv.setOnClickListener(v -> {
-            if (prevTv.isShown()) {
-                viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
-            }
-        });
+        if (prevTv != null) {
+            prevTv.setOnClickListener(v -> {
+                if (prevTv.isShown()) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() - 1, true);
+                }
+            });
 
-        nextTv.setOnClickListener(v -> {
-            if (nextTv.isShown()) {
-                viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
-            }
-        });
+            nextTv.setOnClickListener(v -> {
+                if (nextTv.isShown()) {
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1, true);
+                }
+            });
+        } else if (listener != null) listener.onLandscape();
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void prepareLayoutForPage() {
 
         int stepNum = MainActivity.getStepIndex();
 
-        if (stepNum == 0) {
+        if (stepNum == 0 && pageTv != null) {
             pageTv.setText(getString(R.string.view_pager_intro));
             prevTv.setVisibility(View.INVISIBLE);
         }
-        else {
+        else if (pageTv != null){
             pageTv.setText(String.format(getString(R.string.view_pager_page), stepNum));
             if (!prevTv.isShown()) prevTv.setVisibility(View.VISIBLE);
             if (stepNum == recipe.getSteps().size() - 1) nextTv.setVisibility(View.INVISIBLE);
@@ -123,10 +130,22 @@ public class ViewPagerFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        BakingUtils.dispose(unbinder);
-        super.onDestroyView();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RecipePagerListener) listener = (RecipePagerListener) context;
     }
+
+    @Override
+    public void onDetach() {
+        BakingUtils.dispose(unbinder);
+        listener = null;
+        super.onDetach();
+    }
+
+    public interface RecipePagerListener {
+        void onLandscape();
+    }
+
 
 
     class StepsViewPagerAdapter extends FragmentStatePagerAdapter {

@@ -2,10 +2,12 @@ package io.magics.baking;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.WindowManager;
 
 
 import butterknife.BindView;
@@ -20,9 +22,8 @@ import io.magics.baking.ui.ViewPagerFragment;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements RecipesListFragment.RecipeListener,
-        RecipeIngredientsFragment.StepListListener{
+        RecipeIngredientsFragment.StepListListener, ViewPagerFragment.RecipePagerListener{
 
-    //Todo ExoPlayer implementation
     //Todo Lifecycle handling
     //Todo Transitions
     //Todo Widget
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
+
         if (dataProvider == null) {
             dataProvider = new DataProvider(this, viewModel);
         }
@@ -62,12 +65,12 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
         if (fragment == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(FRAG_CONTAINER, RecipesListFragment.newInstance())
-                    .addToBackStack(null)
+                    .add(FRAG_CONTAINER, RecipesListFragment.newInstance())
                     .commit();
         }
 
     }
+
 
     @Override
     public void onBackPressed() {
@@ -110,4 +113,11 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
     public static void setStepIndex(int newIndex) { stepIndex = newIndex; }
 
+    @Override
+    public void onLandscape() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.hide();
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
 }
