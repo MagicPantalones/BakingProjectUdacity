@@ -2,6 +2,7 @@ package io.magics.baking.ui;
 
 import android.annotation.SuppressLint;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,15 +12,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,12 +42,15 @@ import io.magics.baking.R;
 import io.magics.baking.models.Ingredient;
 import io.magics.baking.models.Step;
 import io.magics.baking.utils.BakingUtils;
+import timber.log.Timber;
 
 
 public class StepDetailFragment extends Fragment {
 
     private static final String ARG_STEP = "step";
     private static final String ARG_INGREDIENTS = "ingredients";
+
+    private static final String USER_AGENT = "baking-app";
 
     @BindView(R.id.recipe_video_player)
     PlayerView playerView;
@@ -45,15 +60,21 @@ public class StepDetailFragment extends Fragment {
     TextView stepHeaderTv;
     @BindView(R.id.step_long_description)
     TextView stepDescriptionTv;
+    @BindView(R.id.no_description_image)
+    ImageView noDescriptionIv;
+    @BindView(R.id.no_video_placeholder)
+    ImageView noVideoPlaceholder;
 
     private Step step;
     private List<Ingredient> ingredients;
     private SimpleExoPlayer player;
+    private PlayerListener playerListener;
     Unbinder unbinder;
 
-    private boolean playWhenReady;
+    private boolean playWhenReady = false;
     private int currentWindow;
     private long playbackPos;
+    private float currentVolume;
 
     public StepDetailFragment() {
         // Required empty public constructor
@@ -82,6 +103,7 @@ public class StepDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_step_detail, container, false);
         unbinder = ButterKnife.bind(this, root);
+        playerListener = new PlayerListener();
 
         return root;
     }
@@ -93,42 +115,82 @@ public class StepDetailFragment extends Fragment {
         if (!ingredients.isEmpty()) gridView.setAdapter(new IngredientsGridAdapter());
         else gridView.setVisibility(View.GONE);
 
+        if ((int) step.getId() == 0) {
+            stepDescriptionTv.setVisibility(View.GONE);
+            stepHeaderTv.setVisibility(View.GONE);
+            noDescriptionIv.setVisibility(View.VISIBLE);
+        }
+
 
         stepHeaderTv.setText(step.getShortDescription());
         stepDescriptionTv.setText(step.getDescription());
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (Util.SDK_INT > 23) initializePlayer();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        initializePlayer();
+        if (Util.SDK_INT <= 23 || player == null) initializePlayer();
     }
 
     private void initializePlayer() {
 
-        player = ExoPlayerFactory.newSimpleInstance(
-                new DefaultRenderersFactory(getContext()),
-                new DefaultTrackSelector(),
-                new DefaultLoadControl()
-        );
+        if (player == null) {
 
-        playerView.setPlayer(player);
+            player = ExoPlayerFactory.newSimpleInstance(
+                    new DefaultRenderersFactory(getContext()),
+                    new DefaultTrackSelector(),
+                    new DefaultLoadControl()
+            );
 
-        player.setPlayWhenReady(playWhenReady);
-        player.seekTo(currentWindow, playbackPos);
+            playerView.setPlayer(player);
 
-        if (step.getVideoURL().isEmpty() && step.getThumbnailURL().isEmpty()) {
-            playerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.baking_logo_long));
-            playerView.setUseArtwork(true);
+            player.setVolume(currentVolume);
+            player.setPlayWhenReady(playWhenReady);
+            player.seekTo(currentWindow, playbackPos);
+
+            Uri movieUri;
+            if (step.getVideoURL().isEmpty()) {
+                movieUri = Uri.parse(step.getThumbnailURL());
+            } else {
+                movieUri = Uri.parse(step.getVideoURL());
+            }
+            player.addListener(playerListener);
+            player.prepare(buildMediaSource(movieUri), true, false);
         }
+    }
 
+    private MediaSource buildMediaSource(Uri uri) {
+        return new ExtractorMediaSource.Factory(new DefaultHttpDataSourceFactory(USER_AGENT))
+                .createMediaSource(uri);
     }
 
     @Override
     public void onPause() {
-        releasePlayer();
+        if (Util.SDK_INT <= 23) releasePlayer();
         super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        if (Util.SDK_INT > 23) releasePlayer();
+        super.onStop();
+    }
+
+    public void toggleMute(View v) {
+        if (player == null) return;
+
+        if (player.getVolume() != 0f) {
+            currentVolume = player.getVolume();
+            player.setVolume(0f);
+        } else {
+            player.setVolume(currentVolume);
+        }
     }
 
     private void releasePlayer() {
@@ -136,8 +198,11 @@ public class StepDetailFragment extends Fragment {
             playbackPos = player.getContentPosition();
             currentWindow = player.getCurrentWindowIndex();
             playWhenReady = player.getPlayWhenReady();
+            currentVolume = player.getVolume();
+            player.removeListener(playerListener);
             player.release();
             player = null;
+            playerView.setPlayer(null);
         }
     }
 
@@ -147,8 +212,52 @@ public class StepDetailFragment extends Fragment {
         super.onDestroyView();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
 
+        if (player != null) {
+            player.setPlayWhenReady(isVisibleToUser);
+        }
+    }
 
+    private class PlayerListener extends SimpleExoPlayer.DefaultEventListener {
+
+        @Override
+        public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+            String state;
+            switch (playbackState) {
+                case Player.STATE_IDLE:
+                    state = "ExoPlayer.STATE_IDLE      -";
+                    break;
+                case Player.STATE_BUFFERING:
+                    state = "ExoPlayer.STATE_BUFFERING -";
+                    break;
+                case Player.STATE_READY:
+                    state = "ExoPlayer.STATE_READY     -";
+                    break;
+                case Player.STATE_ENDED:
+                    state = "ExoPlayer.STATE_ENDED     -";
+                    break;
+                default:
+                    state = "UNKNOWN_STATE             -";
+                    break;
+            }
+            Timber.w(state);
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+            if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+                if (error.getSourceException().getCause() instanceof UnknownHostException) {
+                    Timber.e("No Internet!!! :D");
+                } else if (error.getSourceException().getCause() instanceof MalformedURLException) {
+                    Timber.e("No URL to connect to D:");
+                }
+            }
+            super.onPlayerError(error);
+        }
+    }
 
     class IngredientsGridAdapter extends BaseAdapter {
 
@@ -191,38 +300,12 @@ public class StepDetailFragment extends Fragment {
             TextView ingredientText;
 
 
-
             IngredientViewHolder(View itemView) {
                 ButterKnife.bind(this, itemView);
             }
 
             void setIngredientText(Ingredient ingredient) {
-                Double quantity = ingredient.getQuantity();
-                boolean plural = quantity > 1;
-                String unit = BakingUtils.formatMeasure(ingredient.getMeasure(), plural);
-                String ingredientDescription = ingredient.getRecipeIngredient();
-                String stringQuantity = String.valueOf(quantity);
-
-                if (stringQuantity.matches("[\\p{Digit}]+\\.0")){
-                    stringQuantity = stringQuantity.substring(0, stringQuantity.indexOf('.'));
-                }
-
-                ingredientDescription = ingredientDescription
-                        .substring(0, 1).toUpperCase()
-                        + ingredientDescription.substring(1);
-
-                if (unit != null) {
-                    unit = unit.substring(0, 1).toUpperCase() +
-                            unit.substring(1);
-                    ingredientText.setText(String.format(getString(
-                            R.string.ingredient_format_two_lines),
-                            stringQuantity, unit, ingredientDescription));
-                } else {
-                    ingredientText.setText(String.format(getString(
-                            R.string.ingredient_format_no_unit),
-                            stringQuantity, ingredientDescription));
-                }
-
+                ingredientText.setText(BakingUtils.formatIngredientText(getContext(), ingredient));
             }
         }
     }

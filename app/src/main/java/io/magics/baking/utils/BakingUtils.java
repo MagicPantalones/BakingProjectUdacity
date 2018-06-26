@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Unbinder;
+import io.magics.baking.R;
 import io.magics.baking.models.Ingredient;
 import io.magics.baking.models.Recipe;
 import io.magics.baking.models.Step;
@@ -33,7 +34,35 @@ public class BakingUtils {
                 step.getShortDescription() : "stepId" + step.getId());
     }
 
-    public static String formatMeasure(String unit, boolean plural) {
+    public static String formatIngredientText(Context context, Ingredient ingredient) {
+        double quantity = ingredient.getQuantity();
+        boolean plural = quantity > 1;
+        String stringQuantity = String.valueOf(quantity);
+        String unit = BakingUtils.formatMeasure(ingredient.getMeasure().toLowerCase(), plural);
+        String type = ingredient.getRecipeIngredient();
+
+        if (stringQuantity.matches("[\\p{Digit}]+\\.0")) {
+            stringQuantity = stringQuantity.substring(0, stringQuantity.indexOf('.'));
+        }
+
+        type = type.substring(0, 1).toUpperCase() + type.substring(1);
+
+
+        if (unit == null) {
+
+            return String.format(context.getString(R.string.ingredient_format_no_unit),
+                    stringQuantity, type);
+        } else {
+
+            unit = unit.substring(0, 1).toUpperCase() +
+                    unit.substring(1);
+
+            return String.format(context.getString(R.string.ingredient_format),
+                    stringQuantity, unit, type);
+        }
+    }
+
+    private static String formatMeasure(String unit, boolean plural) {
 
         if (unit == null) return null;
 

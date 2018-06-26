@@ -3,8 +3,7 @@
 
     <string name="servings_header">Servings:</string>
 
-    <string name="ingredient_format">%s %s %s</string>
-    <string name="ingredient_format_two_lines">%s %s - %s </string>
+    <string name="ingredient_format">%s %s - %s </string>
     <string name="ingredient_format_no_unit">%s %s</string>
 
     <string name="steps_format_short">%d. %s</string>

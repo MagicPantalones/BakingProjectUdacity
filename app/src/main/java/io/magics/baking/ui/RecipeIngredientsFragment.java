@@ -135,26 +135,11 @@ public class RecipeIngredientsFragment extends Fragment {
 
         for (int i = 0; i < recipe.getIngredients().size(); i++) {
             Ingredient ingredient = recipe.getIngredients().get(i);
-            double quantity = ingredient.getQuantity();
-            String type = ingredient.getRecipeIngredient();
-            boolean plural = quantity > 1;
-            String unit = BakingUtils.formatMeasure(ingredient.getMeasure().toLowerCase(), plural);
-            String formattedString;
-
-
-            if (unit == null) {
-                formattedString = String.format(getString(R.string.ingredient_format_no_unit),
-                        String.valueOf(quantity), type);
-            } else {
-                formattedString = String.format(getString(
-                        R.string.ingredient_format),
-                        String.valueOf(quantity), unit, type);
-            }
 
             if (i < MAX_LIST_LINES_COLLAPSED) {
-                collapsedIngredients.add(formattedString);
+                collapsedIngredients.add(BakingUtils.formatIngredientText(getContext(), ingredient));
             } else {
-                allIngredients.add(formattedString);
+                allIngredients.add(BakingUtils.formatIngredientText(getContext(), ingredient));
             }
         }
 

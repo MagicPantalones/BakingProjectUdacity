@@ -12,8 +12,26 @@
 
         <com.google.android.exoplayer2.ui.PlayerView
             android:id="@+id/recipe_video_player"
-            android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            app:controller_layout_id="@layout/custom_player_controller"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/no_video_placeholder"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:src="@drawable/baking_no_icon_logo_112pt_by_56pt"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/detail_ingredient_grid"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
 
         <GridView
@@ -27,7 +45,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recipe_video_player"
-            tools:listitem="@layout/simple_view_holder_ingredient" />
+            tools:listitem="@layout/simple_view_holder_ingredient"
+            tools:layout_height="1dp"/>
 
         <TextView
             android:id="@+id/step_description_header"
@@ -56,6 +75,19 @@
             app:layout_constraintTop_toBottomOf="@+id/step_description_header"
             tools:text="11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature." />
 
+        <ImageView
+            android:id="@+id/no_description_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="8dp"
+            android:alpha="0.2"
+            android:src="@drawable/baking_logo_long"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_video_player"
+            tools:ignore="ContentDescription" />
     </android.support.constraint.ConstraintLayout>
 
 
