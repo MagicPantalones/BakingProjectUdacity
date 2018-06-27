@@ -13,6 +13,7 @@ import com.google.gson.stream.JsonReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.magics.baking.models.Recipe;
@@ -62,4 +63,30 @@ public class DataProvider {
         }
     }
 
+    public static List<Recipe> oneShot(Context context) {
+
+        AssetManager assetManager = context.getAssets();
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        try {
+
+            try (JsonReader reader = new JsonReader(new InputStreamReader(
+                    assetManager.open("baking.json")))) {
+
+                Type recipeType = new TypeToken<List<Recipe>>() {
+                }.getType();
+
+                List<Recipe> recipes = gson.fromJson(reader, recipeType);
+                if (recipes == null || recipes.isEmpty()) {
+                    return new ArrayList<>();
+                } else {
+                    return recipes;
+                }
+            }
+
+        } catch (IOException e) {
+            Timber.d("JSON data exception in test");
+            return new ArrayList<>();
+        }
+    }
 }

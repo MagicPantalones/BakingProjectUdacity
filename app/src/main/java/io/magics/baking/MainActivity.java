@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
     //Todo Widget
     //Todo TabletLayout
-    //Todo Tests
 
     private static final int FRAG_CONTAINER = R.id.container_main;
 
