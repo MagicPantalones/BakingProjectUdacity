@@ -1,6 +1,8 @@
 package io.magics.baking;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,14 +31,18 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     //Todo TabletLayout
 
     private static final int FRAG_CONTAINER = R.id.container_main;
+    private static final String KEY_RECIPE = "recipe";
 
     private static int stepIndex;
 
     @BindView(R.id.baking_toolbar_main)
     Toolbar toolbar;
+    @Nullable @BindView(R.id.screen_size_checker)
+    View screenSizeCheckView;
 
     Unbinder mainUnbinder;
     DataProvider dataProvider;
+    boolean twoPane;
 
 
     @Override
@@ -55,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         if (dataProvider == null) {
             dataProvider = new DataProvider(this, viewModel);
         }
-
+        twoPane = screenSizeCheckView != null;
         dataProvider.init();
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(FRAG_CONTAINER);
@@ -88,29 +94,38 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
     @Override
     public void onRecipeClick(Recipe recipe) {
-        RecipeIngredientsFragment fragment = RecipeIngredientsFragment.newInstance(recipe);
-        fragment.setEnterTransition(new Fade());
-        fragment.setReenterTransition(new Fade());
-        getSupportFragmentManager().beginTransaction()
-                .replace(FRAG_CONTAINER, fragment)
-                .addToBackStack(null)
-                .commit();
+
+        if (twoPane) {
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra(KEY_RECIPE, recipe);
+            startActivity(intent);
+        } else {
+            RecipeIngredientsFragment fragment = RecipeIngredientsFragment.newInstance(recipe);
+            fragment.setEnterTransition(new Fade());
+            fragment.setReenterTransition(new Fade());
+            getSupportFragmentManager().beginTransaction()
+                    .replace(FRAG_CONTAINER, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override
     public void onStepClicked(View view, Recipe recipe, int pos) {
-        setStepIndex(pos);
 
-        ViewPagerFragment fragment = ViewPagerFragment.newInstance(recipe);
-        fragment.setEnterTransition(new Fade());
-        fragment.setReenterTransition(new Fade());
+        if (!twoPane) {
+            setStepIndex(pos);
 
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .addToBackStack(null)
-                .replace(FRAG_CONTAINER, fragment)
-                .commit();
+            ViewPagerFragment fragment = ViewPagerFragment.newInstance(recipe);
+            fragment.setEnterTransition(new Fade());
+            fragment.setReenterTransition(new Fade());
 
+            getSupportFragmentManager().beginTransaction()
+                    .setReorderingAllowed(true)
+                    .addToBackStack(null)
+                    .replace(FRAG_CONTAINER, fragment)
+                    .commit();
+        }
     }
 
     public static int getStepIndex() { return stepIndex; }
