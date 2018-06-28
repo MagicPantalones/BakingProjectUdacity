@@ -1,0 +1,52 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#fffffa"
+    android:padding="@dimen/widget_margin">
+
+    <ImageView
+        android:id="@+id/widget_app_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/donut_only_icon_56pt"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/app_logo_general" />
+    <ImageView
+        android:id="@+id/widget_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:src="@drawable/baking_no_icon_logo_112pt_by_56pt"
+        android:layout_below="@+id/widget_app_logo"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/app_logo_text" />
+
+    <TextView
+        android:id="@+id/widget_recipe_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/widget_app_name"
+        android:layout_centerHorizontal="true"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Nutella Pie!"
+        />
+
+    <GridView
+        android:id="@+id/widget_ingredient_grid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_below="@+id/widget_recipe_name"
+        />
+    
+    <ImageView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/baking_logo_image_large"
+        android:contentDescription="@string/empty_grid_view" />
+
+</RelativeLayout>

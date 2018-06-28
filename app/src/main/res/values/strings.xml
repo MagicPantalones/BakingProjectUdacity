@@ -20,5 +20,13 @@
 
     <string name="volume_on_a11y">Volume on.</string>
     <string name="volume_off_a11y">Volume off.</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+    <string name="prev_recipe_a11y">Previous Recipe</string>
+    <string name="next_recipe_a11y">Next Recipe</string>
+    <string name="app_logo_general">App logo</string>
+    <string name="app_logo_text">Baking!</string>
+    <string name="empty_grid_view">Empty GridView</string>
 
 </resources>
