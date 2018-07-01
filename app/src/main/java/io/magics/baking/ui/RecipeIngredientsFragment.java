@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +33,7 @@ public class RecipeIngredientsFragment extends Fragment {
 
     private static final String ARG_RECIPE = "recipe";
     private static final int MAX_LIST_LINES_COLLAPSED = 3;
+    private static final String KEY_MANAGER_STATE = "manager_state";
 
     @BindView(R.id.steps_ingredients_list_collapsed)
     ListView listViewCollapsed;
@@ -119,6 +119,18 @@ public class RecipeIngredientsFragment extends Fragment {
         stepsRecycler.setAdapter(adapter);
         adapter.setSteps(recipe.getSteps());
 
+        if (savedInstanceState != null) {
+            RecyclerView.LayoutManager manager = stepsRecycler.getLayoutManager();
+            manager.onRestoreInstanceState(savedInstanceState.getParcelable(KEY_MANAGER_STATE));
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        RecyclerView.LayoutManager manager = stepsRecycler.getLayoutManager();
+        outState.putParcelable(KEY_MANAGER_STATE, manager.onSaveInstanceState());
     }
 
     @Override

@@ -2,7 +2,6 @@ package io.magics.baking;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
     private static final int FRAG_CONTAINER = R.id.container_main;
     private static final String KEY_RECIPE = "recipe";
+    private static final String KEY_STEP_INDEX = "step_index";
 
     private static int stepIndex;
 
@@ -82,6 +82,10 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
             onRecipeClick(DataProvider.oneShot(this).get(recipeId));
         }
 
+        if (savedInstanceState != null) {
+            setStepIndex(savedInstanceState.getInt(KEY_STEP_INDEX, 0));
+        }
+
     }
 
 
@@ -95,6 +99,12 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         } else {
             getSupportFragmentManager().popBackStack();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_STEP_INDEX, stepIndex);
     }
 
     @Override

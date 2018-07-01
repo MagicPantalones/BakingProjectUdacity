@@ -6,17 +6,13 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import io.magics.baking.MainActivity;
 import io.magics.baking.R;
 import io.magics.baking.data.DataProvider;
-import io.magics.baking.models.Recipe;
 
 /**
  * Implementation of App Widget functionality.

@@ -15,6 +15,8 @@ import io.magics.baking.utils.BakingUtils;
 
 public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
+    private static final String KEY_RECIPE = "recipe";
+
     Context context;
     List<Ingredient> ingredients;
     int recipeId;
@@ -32,10 +34,10 @@ public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public void onDataSetChanged() {
-        if (intent.getIntExtra("recipe", -1) == -1) {
+        if (intent.getIntExtra(KEY_RECIPE, -1) == -1) {
             ingredients = new ArrayList<>();
         } else {
-            recipeId = intent.getIntExtra("recipe", -1);
+            recipeId = intent.getIntExtra(KEY_RECIPE, -1);
             ingredients = DataProvider.oneShot(context).get(recipeId).getIngredients();
         }
 
@@ -65,7 +67,7 @@ public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
         views.setTextViewText(R.id.ingredient_text_widget, ingredientText);
 
         Intent fillIntent = new Intent();
-        fillIntent.putExtra("recipe", recipeId);
+        fillIntent.putExtra(KEY_RECIPE, recipeId);
         views.setOnClickFillInIntent(R.id.ingredient_text_widget, fillIntent);
         return views;
     }

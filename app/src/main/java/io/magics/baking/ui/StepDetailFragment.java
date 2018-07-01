@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -40,7 +39,6 @@ import io.magics.baking.R;
 import io.magics.baking.models.Ingredient;
 import io.magics.baking.models.Step;
 import io.magics.baking.utils.BakingUtils;
-import timber.log.Timber;
 
 
 public class StepDetailFragment extends Fragment {

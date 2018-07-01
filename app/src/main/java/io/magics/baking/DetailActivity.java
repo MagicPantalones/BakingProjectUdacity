@@ -13,7 +13,6 @@ import io.magics.baking.models.Recipe;
 import io.magics.baking.models.Step;
 import io.magics.baking.ui.RecipeIngredientsFragment;
 import io.magics.baking.ui.StepDetailFragment;
-import io.magics.baking.ui.ViewPagerFragment;
 import io.magics.baking.utils.BakingUtils;
 import timber.log.Timber;
 

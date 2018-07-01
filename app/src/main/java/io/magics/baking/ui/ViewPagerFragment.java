@@ -41,7 +41,6 @@ public class ViewPagerFragment extends Fragment {
     TextView pageTv;
 
     private Recipe recipe;
-    private StepsViewPagerAdapter adapter;
     private RecipePagerListener listener;
 
     Unbinder unbinder;
@@ -83,7 +82,7 @@ public class ViewPagerFragment extends Fragment {
 
         prepareLayoutForPage();
 
-        adapter = new StepsViewPagerAdapter(getChildFragmentManager(), recipe);
+        StepsViewPagerAdapter adapter = new StepsViewPagerAdapter(getChildFragmentManager(), recipe);
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(MainActivity.getStepIndex());

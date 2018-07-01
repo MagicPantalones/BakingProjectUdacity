@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.Context;
 
 import io.magics.baking.R;
-import io.magics.baking.models.Recipe;
 import io.magics.baking.ui.BakingAppWidget;
 
 

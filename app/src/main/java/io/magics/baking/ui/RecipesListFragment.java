@@ -3,7 +3,6 @@ package io.magics.baking.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -133,7 +132,6 @@ public class RecipesListFragment extends Fragment {
             Recipe recipe = recipeList.get(position);
             holder.recipeNameTv.setText(recipe.getName());
             holder.servingsTv.setText(String.valueOf(recipe.getServings()));
-            holder.setTransitionName(recipe);
 
             holder.itemView.setOnClickListener(v ->
                     recipeListener.onRecipeClick(recipe));
@@ -175,10 +173,6 @@ public class RecipesListFragment extends Fragment {
             RecipeListViewHolder(View itemView) {
                 super(itemView);
                 ButterKnife.bind(this, itemView);
-            }
-
-            void setTransitionName(Recipe recipe) {
-                viewHolderWrapper.setTransitionName(recipe.getName());
             }
         }
 
