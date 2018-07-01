@@ -166,6 +166,7 @@ public class RecipeIngredientsFragment extends Fragment {
             collapsedAdapter = new ArrayAdapter<>(getContext(), R.layout.simple_ingredient_list_item,
                     collapsedIngredients);
         }
+
         expandedAdapter = new ArrayAdapter<>(getContext(), R.layout.simple_ingredient_list_item,
                 allIngredients);
 
