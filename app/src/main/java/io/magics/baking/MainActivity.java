@@ -23,6 +23,7 @@ import io.magics.baking.models.Recipe;
 import io.magics.baking.ui.RecipeIngredientsFragment;
 import io.magics.baking.ui.RecipesListFragment;
 import io.magics.baking.ui.ViewPagerFragment;
+import io.magics.baking.utils.BakingUtils;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements RecipesListFragment.RecipeListener,
@@ -53,14 +54,17 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         RecipeViewModel viewModel = ViewModelProviders.of(this).get(RecipeViewModel.class);
         Timber.plant(new Timber.DebugTree());
 
+        //Used a custom toolbar to get the wanted toolbar style
         setSupportActionBar(toolbar);
 
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        //Made a simple DataProvider class.
         if (dataProvider == null) {
             dataProvider = new DataProvider(this, viewModel);
         }
+
         twoPane = screenSizeCheckView != null;
         dataProvider.init();
 
@@ -105,6 +109,12 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_STEP_INDEX, stepIndex);
+    }
+
+    @Override
+    protected void onDestroy() {
+        BakingUtils.dispose(mainUnbinder);
+        super.onDestroy();
     }
 
     @Override

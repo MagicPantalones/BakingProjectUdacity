@@ -38,11 +38,7 @@ class VideoPlaybackAssertion implements ViewAssertion {
         SimpleExoPlayer exoPlayer = (SimpleExoPlayer) exoPlayerView.getPlayer();
         int state = exoPlayer.getPlaybackState();
         Boolean isPlaying;
-        if ((state == STATE_BUFFERING) || (state == STATE_READY)) {
-            isPlaying = true;
-        } else {
-            isPlaying = false;
-        }
+        isPlaying = (state == STATE_BUFFERING) || (state == STATE_READY);
         assertThat(isPlaying, matcher);
     }
 

@@ -120,8 +120,4 @@ public class BakingUtils {
         return stepIngredients;
     }
 
-
-    public static int dpToPx(Context context, float dp) {
-        return Math.round(dp * context.getResources().getDisplayMetrics().density);
-    }
 }

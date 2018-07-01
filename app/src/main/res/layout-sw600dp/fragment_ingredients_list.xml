@@ -87,7 +87,7 @@
             android:src="@drawable/show_more_anim"
             app:layout_constraintTop_toBottomOf="@+id/steps_ingredients_list_expanded"
             app:layout_constraintStart_toStartOf="@+id/steps_ingredients_header"
-            tools:ignore="ContentDescription,RtlSymmetry" />
+            tools:ignore="ContentDescription,InconsistentLayout,RtlSymmetry" />
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/steps_list_wrapper"
