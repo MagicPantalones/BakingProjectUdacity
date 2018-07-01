@@ -33,6 +33,10 @@ import io.magics.baking.utils.GlideApp;
 
 public class RecipesListFragment extends Fragment {
 
+    private static final String ARG_TWO_PANE = "two_pane";
+
+    private boolean twoPane;
+
     @BindView(R.id.recipe_list_recycler)
     RecyclerView recipeListRecycler;
 
@@ -45,8 +49,20 @@ public class RecipesListFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static RecipesListFragment newInstance() {
-        return new RecipesListFragment();
+    public static RecipesListFragment newInstance(boolean twoPane) {
+        RecipesListFragment frag = new RecipesListFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_TWO_PANE, twoPane);
+        frag.setArguments(args);
+        return frag;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            twoPane = getArguments().getBoolean(ARG_TWO_PANE);
+        }
     }
 
     @Override
@@ -69,8 +85,7 @@ public class RecipesListFragment extends Fragment {
         //noinspection ConstantConditions
         viewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
 
-        if (getContext().getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_LANDSCAPE){
+        if (twoPane){
             recipeListRecycler.setLayoutManager(new GridLayoutManager(getContext(), 3));
         } else {
             recipeListRecycler.setLayoutManager(new LinearLayoutManager(getContext(),

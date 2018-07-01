@@ -1,37 +1,44 @@
 package io.magics.baking.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import io.magics.baking.MainActivity;
 import io.magics.baking.R;
 import io.magics.baking.data.DataProvider;
 import io.magics.baking.models.Ingredient;
-import io.magics.baking.models.Recipe;
 import io.magics.baking.utils.BakingUtils;
 
 public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
     Context context;
     List<Ingredient> ingredients;
-    Recipe recipe;
+    int recipeId;
+    Intent intent;
 
-    public RecipeRemoteViewFactory(Context appContext, Recipe recipe) {
+    public RecipeRemoteViewFactory(Context appContext, Intent intent) {
         context = appContext;
-        this.recipe = recipe;
+        this.intent = intent;
     }
 
     @Override
     public void onCreate() {
-
+        //Not needed
     }
 
     @Override
     public void onDataSetChanged() {
-        ingredients = recipe.getIngredients();
+        if (intent.getIntExtra("recipe", -1) == -1) {
+            ingredients = new ArrayList<>();
+        } else {
+            recipeId = intent.getIntExtra("recipe", -1);
+            ingredients = DataProvider.oneShot(context).get(recipeId).getIngredients();
+        }
+
     }
 
     @Override
@@ -47,13 +54,19 @@ public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public RemoteViews getViewAt(int position) {
-        Ingredient ingredient = ingredients.get(position);
 
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.baking_app_widget);
+        if (ingredients.isEmpty()) return null;
+
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.recipe_widget_grid);
+
+        Ingredient ingredient = ingredients.get(position);
         String ingredientText = BakingUtils.formatIngredientText(context, ingredient);
 
         views.setTextViewText(R.id.ingredient_text_widget, ingredientText);
 
+        Intent fillIntent = new Intent();
+        fillIntent.putExtra("recipe", recipeId);
+        views.setOnClickFillInIntent(R.id.ingredient_text_widget, fillIntent);
         return views;
     }
 
@@ -64,12 +77,12 @@ public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public int getViewTypeCount() {
-        return 0;
+        return 1;
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override

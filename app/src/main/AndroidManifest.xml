@@ -34,7 +34,10 @@
 
         <service
             android:name=".ui.RecipeGridWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".data.RecipeIntentService"
+            android:exported="false"/>
     </application>
 
 </manifest>

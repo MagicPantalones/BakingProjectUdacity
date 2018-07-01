@@ -2,6 +2,7 @@ package io.magics.baking;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -17,6 +18,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.magics.baking.data.DataProvider;
+import io.magics.baking.data.RecipeIntentService;
 import io.magics.baking.data.RecipeViewModel;
 import io.magics.baking.models.Recipe;
 import io.magics.baking.ui.RecipeIngredientsFragment;
@@ -27,8 +29,6 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity implements RecipesListFragment.RecipeListener,
         RecipeIngredientsFragment.StepListListener, ViewPagerFragment.RecipePagerListener {
 
-    //Todo Widget
-    //Todo TabletLayout
 
     private static final int FRAG_CONTAINER = R.id.container_main;
     private static final String KEY_RECIPE = "recipe";
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
         Fragment fragment = getSupportFragmentManager().findFragmentById(FRAG_CONTAINER);
 
         if (fragment == null) {
-            RecipesListFragment frag = RecipesListFragment.newInstance();
+            RecipesListFragment frag = RecipesListFragment.newInstance(twoPane);
 
             frag.setEnterTransition(new Fade());
             frag.setReenterTransition(new Fade());
@@ -75,6 +75,11 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
             getSupportFragmentManager().beginTransaction()
                     .add(FRAG_CONTAINER, frag)
                     .commit();
+        }
+
+        if (getIntent().getIntExtra(KEY_RECIPE, -1) != -1) {
+            int recipeId = getIntent().getIntExtra(KEY_RECIPE, -1);
+            onRecipeClick(DataProvider.oneShot(this).get(recipeId));
         }
 
     }
@@ -94,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
     @Override
     public void onRecipeClick(Recipe recipe) {
+
+        RecipeIntentService.startActionUpdateRecipeWidget(this,
+                (int) recipe.getId() - 1);
 
         if (twoPane) {
             Intent intent = new Intent(this, DetailActivity.class);

@@ -167,18 +167,21 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/detail_ingredient_grid"
                 tools:text="@sample/baking.json/data/steps/shortDescription" />
-
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/step_description_header"
+                app:layout_constraintBottom_toBottomOf="parent">
             <TextView
                 android:id="@+id/step_long_description"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:padding="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/step_description_header"
                 tools:text="11. Take the cheesecake out of the oven. It should look pale yellow or golden on top and be set but still slightly jiggly. Let it cool to room temperature." />
-
+            </android.support.v4.widget.NestedScrollView>
             <ImageView
                 android:id="@+id/no_description_image"
                 android:layout_width="0dp"
