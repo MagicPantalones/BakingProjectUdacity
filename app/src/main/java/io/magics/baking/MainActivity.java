@@ -62,11 +62,14 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
         //Made a simple DataProvider class.
         if (dataProvider == null) {
-            dataProvider = new DataProvider(this, viewModel);
+            dataProvider = new DataProvider(viewModel);
         }
 
         twoPane = screenSizeCheckView != null;
-        dataProvider.init();
+
+        if (DataProvider.isInternetConnected(this)) {
+            dataProvider.init();
+        }
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(FRAG_CONTAINER);
 
@@ -81,9 +84,9 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
                     .commit();
         }
 
-        if (getIntent().getIntExtra(KEY_RECIPE, -1) != -1) {
-            int recipeId = getIntent().getIntExtra(KEY_RECIPE, -1);
-            onRecipeClick(DataProvider.oneShot(this).get(recipeId));
+        if (getIntent().getParcelableExtra(KEY_RECIPE) != null) {
+            Recipe recipe = getIntent().getParcelableExtra(KEY_RECIPE);
+            onRecipeClick(recipe);
         }
 
         if (savedInstanceState != null) {
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     @Override
     protected void onDestroy() {
         BakingUtils.dispose(mainUnbinder);
+        dataProvider.dispose();
         super.onDestroy();
     }
 

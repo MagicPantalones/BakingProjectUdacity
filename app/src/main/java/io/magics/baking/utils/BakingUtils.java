@@ -12,6 +12,7 @@ import io.magics.baking.R;
 import io.magics.baking.models.Ingredient;
 import io.magics.baking.models.Recipe;
 import io.magics.baking.models.Step;
+import io.reactivex.disposables.Disposable;
 
 public class BakingUtils {
 
@@ -24,6 +25,8 @@ public class BakingUtils {
             else if (object instanceof AnimatedVectorDrawable &&
                     ((AnimatedVectorDrawable) object).isRunning()) {
                 ((AnimatedVectorDrawable) object).stop();
+            } else if (object instanceof Disposable && !((Disposable) object).isDisposed()) {
+                ((Disposable) object).dispose();
             }
         }
     }
