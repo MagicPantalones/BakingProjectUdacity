@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
 
-def supportLibVer = '27.1.1'
-def exoPlayerVer = '2.8.1'
-
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -42,27 +39,36 @@ task checkstyle(type: Checkstyle) {
 check.dependsOn 'checkstyle'
 
 dependencies {
+    def supportLibVer = '27.1.1'
+    def exoPlayerVer = '2.8.1'
+    def roomVer = '1.1.1'
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //Google base libs
-    implementation "com.android.support:appcompat-v7:${supportLibVer}"
-    implementation "com.android.support:design:${supportLibVer}"
-    implementation "com.android.support:appcompat-v7:${supportLibVer}"
-    implementation "com.android.support:recyclerview-v7:${supportLibVer}"
-    implementation "com.android.support:cardview-v7:${supportLibVer}"
-    implementation "com.android.support:support-v4:${supportLibVer}"
+    implementation "com.android.support:appcompat-v7:$supportLibVer"
+    implementation "com.android.support:design:$supportLibVer"
+    implementation "com.android.support:appcompat-v7:$supportLibVer"
+    implementation "com.android.support:recyclerview-v7:$supportLibVer"
+    implementation "com.android.support:cardview-v7:$supportLibVer"
+    implementation "com.android.support:support-v4:$supportLibVer"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.google.code.gson:gson:2.8.2'
 
     //ExoPlayer
-    implementation "com.google.android.exoplayer:exoplayer-core:${exoPlayerVer}"
-    implementation "com.google.android.exoplayer:exoplayer-dash:${exoPlayerVer}"
-    implementation "com.google.android.exoplayer:exoplayer-ui:${exoPlayerVer}"
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoPlayerVer"
+    implementation "com.google.android.exoplayer:exoplayer-dash:$exoPlayerVer"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayerVer"
 
     //Network
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    //Room
+    implementation "android.arch.persistence.room:runtime:$roomVer"
+    annotationProcessor "android.arch.persistence.room:compiler:$roomVer"
+    androidTestImplementation "android.arch.persistence.room:testing:$roomVer"
 
     //Others
     implementation 'com.github.bumptech.glide:glide:4.6.1'
