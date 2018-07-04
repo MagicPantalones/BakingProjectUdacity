@@ -1,6 +1,5 @@
 package io.magics.baking.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.RemoteViews;
@@ -14,8 +13,6 @@ import io.magics.baking.data.DataProvider;
 import io.magics.baking.models.Ingredient;
 import io.magics.baking.models.Recipe;
 import io.magics.baking.utils.BakingUtils;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
 
@@ -23,7 +20,6 @@ public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
 
     Context context;
     List<Ingredient> ingredients;
-    List<Recipe> recipeList = new ArrayList<>();
     int recipeId;
     Intent intent;
 
@@ -34,30 +30,24 @@ public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public void onCreate() {
-        getNewData();
+        //Not needed
     }
 
     @Override
     public void onDataSetChanged() {
-        getNewData();
         if (intent.getIntExtra(KEY_RECIPE, -1) == -1) {
             ingredients = new ArrayList<>();
         } else {
             recipeId = intent.getIntExtra(KEY_RECIPE, -1);
-            if (!recipeList.isEmpty()) {
-                ingredients = recipeList.get(recipeId).getIngredients();
+            Recipe recipe = DataProvider.oneShot(context, recipeId);
+            if (recipe != null) {
+                ingredients = recipe.getIngredients();
+            } else {
+                recipeId = -1;
+                ingredients = new ArrayList<>();
             }
         }
-    }
 
-    @SuppressLint("CheckResult")
-    private void getNewData() {
-        if (DataProvider.isInternetConnected(context)) {
-            DataProvider.oneShot()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(recipes -> recipeList = recipes);
-        }
     }
 
     @Override

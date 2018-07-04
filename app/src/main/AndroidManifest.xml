@@ -20,6 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <provider
+            android:authorities="io.magics.baking.data.db.RecipeProvider"
+            android:name="io.magics.baking.data.db.generated.RecipeProvider"
+            android:exported="true"/>
+        
         <activity android:name=".DetailActivity" />
 
         <receiver android:name=".ui.BakingAppWidget">
@@ -37,7 +43,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
             android:name=".data.RecipeIntentService"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

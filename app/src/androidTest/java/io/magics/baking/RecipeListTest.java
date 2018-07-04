@@ -37,7 +37,7 @@ public class RecipeListTest {
 
     @Before
     public void setUp() {
-        recipeList = DataProvider.oneShot(activityTestRule.getActivity());
+        recipeList = DataProvider.oneShotList(activityTestRule.getActivity());
     }
 
     @Test

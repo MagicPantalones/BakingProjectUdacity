@@ -62,14 +62,11 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
         //Made a simple DataProvider class.
         if (dataProvider == null) {
-            dataProvider = new DataProvider(viewModel);
+            dataProvider = new DataProvider(this, viewModel);
         }
 
         twoPane = screenSizeCheckView != null;
-
-        if (DataProvider.isInternetConnected(this)) {
-            dataProvider.init();
-        }
+        dataProvider.init();
 
         Fragment fragment = getSupportFragmentManager().findFragmentById(FRAG_CONTAINER);
 
@@ -84,9 +81,12 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
                     .commit();
         }
 
-        if (getIntent().getParcelableExtra(KEY_RECIPE) != null) {
-            Recipe recipe = getIntent().getParcelableExtra(KEY_RECIPE);
-            onRecipeClick(recipe);
+        if (getIntent().getIntExtra(KEY_RECIPE, -1) != -1) {
+            int recipeId = getIntent().getIntExtra(KEY_RECIPE, -1);
+            Recipe recipe = DataProvider.oneShot(this, recipeId);
+            if (recipe != null) {
+                onRecipeClick(recipe);
+            }
         }
 
         if (savedInstanceState != null) {
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     public void onRecipeClick(Recipe recipe) {
 
         RecipeIntentService.startActionUpdateRecipeWidget(this,
-                (int) recipe.getId() - 1);
+                (int) recipe.getId());
 
         if (twoPane) {
             Intent intent = new Intent(this, DetailActivity.class);

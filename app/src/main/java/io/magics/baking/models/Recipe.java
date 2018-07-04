@@ -39,11 +39,22 @@ public class Recipe implements Parcelable{
     public Recipe() {}
 
     public double getId() { return id; }
+    public void setId(double id) { this.id = id; }
+
     public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
     public List<Ingredient> getIngredients() { return ingredients; }
+    public void setIngredients(List<Ingredient> ingredients) { this.ingredients = ingredients; }
+
     public List<Step> getSteps() { return steps; }
+    public void setSteps(List<Step> steps) { this.steps = steps; }
+
     public double getServings() { return servings; }
+    public void setServings(double servings) { this.servings = servings; }
+
     public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 
     @Override
     public int describeContents() {
