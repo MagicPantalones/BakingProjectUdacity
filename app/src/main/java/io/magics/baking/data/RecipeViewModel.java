@@ -18,9 +18,7 @@ public class RecipeViewModel extends ViewModel {
         return recipesLiveData.getValue() != null && !recipesLiveData.getValue().isEmpty();
     }
 
-    public void addRecipies(List<Recipe> recipes) {
-        recipesLiveData.setValue(recipes);
-    }
+    public void addRecipies(List<Recipe> recipes) { recipesLiveData.setValue(recipes); }
 
     public void registerObserver(LifecycleOwner lifecycleOwner, Observer<List<Recipe>> observer){
         recipesLiveData.observe(lifecycleOwner, observer);

@@ -55,7 +55,7 @@ public class DetailActivity extends AppCompatActivity implements
 
         Step step = recipe.getSteps().get(0);
         StepDetailFragment fragStep = StepDetailFragment.newInstance(step,
-                BakingUtils.getStepIngredients(step, recipe));
+                BakingUtils.getStepIngredients(step, recipe), true);
 
         getSupportFragmentManager().beginTransaction()
                 .add(CONTAINER_OVERVIEW, fragOverview)
@@ -81,7 +81,7 @@ public class DetailActivity extends AppCompatActivity implements
 
             Step step = recipe.getSteps().get(pos);
             StepDetailFragment fragment = StepDetailFragment.newInstance(step,
-                    BakingUtils.getStepIngredients(step, recipe));
+                    BakingUtils.getStepIngredients(step, recipe), true);
             fragment.setUserVisibleHint(true);
             fragment.setEnterTransition(new Fade());
 

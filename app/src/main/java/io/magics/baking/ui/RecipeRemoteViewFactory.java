@@ -11,6 +11,7 @@ import java.util.List;
 import io.magics.baking.R;
 import io.magics.baking.data.DataProvider;
 import io.magics.baking.models.Ingredient;
+import io.magics.baking.models.Recipe;
 import io.magics.baking.utils.BakingUtils;
 
 public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFactory {
@@ -38,7 +39,13 @@ public class RecipeRemoteViewFactory implements RemoteViewsService.RemoteViewsFa
             ingredients = new ArrayList<>();
         } else {
             recipeId = intent.getIntExtra(KEY_RECIPE, -1);
-            ingredients = DataProvider.oneShot(context).get(recipeId).getIngredients();
+            Recipe recipe = DataProvider.oneShot(context, recipeId);
+            if (recipe != null) {
+                ingredients = recipe.getIngredients();
+            } else {
+                recipeId = -1;
+                ingredients = new ArrayList<>();
+            }
         }
 
     }

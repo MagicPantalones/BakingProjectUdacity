@@ -83,7 +83,10 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
 
         if (getIntent().getIntExtra(KEY_RECIPE, -1) != -1) {
             int recipeId = getIntent().getIntExtra(KEY_RECIPE, -1);
-            onRecipeClick(DataProvider.oneShot(this).get(recipeId));
+            Recipe recipe = DataProvider.oneShot(this, recipeId);
+            if (recipe != null) {
+                onRecipeClick(recipe);
+            }
         }
 
         if (savedInstanceState != null) {
@@ -114,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     @Override
     protected void onDestroy() {
         BakingUtils.dispose(mainUnbinder);
+        dataProvider.dispose();
         super.onDestroy();
     }
 
@@ -121,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     public void onRecipeClick(Recipe recipe) {
 
         RecipeIntentService.startActionUpdateRecipeWidget(this,
-                (int) recipe.getId() - 1);
+                (int) recipe.getId());
 
         if (twoPane) {
             Intent intent = new Intent(this, DetailActivity.class);

@@ -85,12 +85,19 @@ public class ViewPagerFragment extends Fragment {
         StepsViewPagerAdapter adapter = new StepsViewPagerAdapter(getChildFragmentManager(), recipe);
 
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setCurrentItem(MainActivity.getStepIndex());
 
         viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+                StepDetailFragment oldFrag = (StepDetailFragment) adapter.instantiateItem(viewPager,
+                        MainActivity.getStepIndex());
+                StepDetailFragment newFrag = (StepDetailFragment) adapter.instantiateItem(viewPager,
+                        position);
                 MainActivity.setStepIndex(position);
+                oldFrag.setPlayWhenReady(false);
+                newFrag.setPlayWhenReady(true);
                 prepareLayoutForPage();
             }
         });
@@ -162,7 +169,8 @@ public class ViewPagerFragment extends Fragment {
         public Fragment getItem(int position) {
             Step step = stepList.get(position);
             List<Ingredient> ingredients = BakingUtils.getStepIngredients(step, recipe);
-            return StepDetailFragment.newInstance(step, ingredients);
+            boolean playWhenReady = MainActivity.getStepIndex() == position;
+            return StepDetailFragment.newInstance(step, ingredients, playWhenReady);
         }
 
         @Override

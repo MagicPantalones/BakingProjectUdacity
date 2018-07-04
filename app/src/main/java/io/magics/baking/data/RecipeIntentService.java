@@ -5,8 +5,10 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Context;
+import android.database.Cursor;
 
 import io.magics.baking.R;
+import io.magics.baking.models.Recipe;
 import io.magics.baking.ui.BakingAppWidget;
 
 
@@ -39,10 +41,11 @@ public class RecipeIntentService extends IntentService {
     }
 
     private void handleActionUpdateRecipeWidget(int recipeId) {
+        Recipe recipe = DataProvider.oneShot(this, recipeId);
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,
                 BakingAppWidget.class));
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_ingredient_grid);
-        BakingAppWidget.updateAppWidgets(this, appWidgetManager, appWidgetIds, recipeId);
+        BakingAppWidget.updateAppWidgets(this, appWidgetManager, appWidgetIds, recipe);
     }
 }

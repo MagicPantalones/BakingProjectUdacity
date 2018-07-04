@@ -45,6 +45,7 @@ public class StepDetailFragment extends Fragment {
 
     private static final String ARG_STEP = "step";
     private static final String ARG_INGREDIENTS = "ingredients";
+    private static final String ARG_READY = "play_when_ready";
 
     private static final String KEY_CURR_WINDOW = "currentWindow";
     private static final String KEY_PLAY_POSITION = "playbackPosition";
@@ -87,7 +88,7 @@ public class StepDetailFragment extends Fragment {
     private PlayerListener playerListener;
     Unbinder unbinder;
 
-    private boolean playWhenReady = false;
+    private boolean playWhenReady;
     private int currentWindow;
     private long playbackPos;
     private float currentVolume = -1.0f;
@@ -101,11 +102,13 @@ public class StepDetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static StepDetailFragment newInstance(Step step, List<Ingredient> ingredients) {
+    public static StepDetailFragment newInstance(Step step, List<Ingredient> ingredients,
+                                                 boolean playWhenReady) {
         StepDetailFragment fragment = new StepDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_STEP, step);
         args.putParcelableArrayList(ARG_INGREDIENTS, (ArrayList<Ingredient>) ingredients);
+        args.putBoolean(ARG_READY, playWhenReady);
         fragment.setArguments(args);
         return fragment;
     }
@@ -116,6 +119,7 @@ public class StepDetailFragment extends Fragment {
         if (getArguments() != null) {
             step = getArguments().getParcelable(ARG_STEP);
             ingredients = getArguments().getParcelableArrayList(ARG_INGREDIENTS);
+            playWhenReady = getArguments().getBoolean(ARG_READY);
         }
     }
 
@@ -161,6 +165,8 @@ public class StepDetailFragment extends Fragment {
         replayBtn.setOnClickListener(v -> playAgain());
 
     }
+
+
 
     @Override
     public void onStart() {
@@ -213,6 +219,7 @@ public class StepDetailFragment extends Fragment {
 
     @Override
     public void onPause() {
+        registerPlayerState();
         if (Util.SDK_INT <= 23) releasePlayer();
         super.onPause();
     }
@@ -221,6 +228,12 @@ public class StepDetailFragment extends Fragment {
     public void onStop() {
         if (Util.SDK_INT > 23) releasePlayer();
         super.onStop();
+    }
+
+    //If I initialize @param playWhenReady as true the video will autoPlay in the offscreen fragments
+    public void setPlayWhenReady(boolean playWhenReady) {
+        this.playWhenReady = playWhenReady;
+        if (player != null) player.setPlayWhenReady(this.playWhenReady);
     }
 
     private void toggleMute(Volume volume) {
@@ -257,14 +270,23 @@ public class StepDetailFragment extends Fragment {
         }
     }
 
+    private void registerPlayerState() {
+        playWhenReady = player.getPlayWhenReady();
+        currentWindow = player.getCurrentWindowIndex();
+        playbackPos = player.getContentPosition();
+        currentVolume = player.getVolume();
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_STEP, step);
-        outState.putBoolean(KEY_READY, player.getPlayWhenReady());
-        outState.putInt(KEY_CURR_WINDOW, player.getCurrentWindowIndex());
-        outState.putLong(KEY_PLAY_POSITION, player.getContentPosition());
-        outState.putFloat(KEY_CURR_VOLUME, player.getVolume());
+        outState.putBoolean(KEY_READY, player == null ? playWhenReady : player.getPlayWhenReady());
+        outState.putInt(KEY_CURR_WINDOW, player == null ? currentWindow :
+                player.getCurrentWindowIndex());
+        outState.putLong(KEY_PLAY_POSITION, player == null ? playbackPos :
+                player.getContentPosition());
+        outState.putFloat(KEY_CURR_VOLUME, player == null ? currentVolume : player.getVolume());
     }
 
     @Override
@@ -272,16 +294,6 @@ public class StepDetailFragment extends Fragment {
         BakingUtils.dispose(unbinder);
         super.onDetach();
     }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        playWhenReady = isVisibleToUser;
-        if (player != null) {
-            player.setPlayWhenReady(playWhenReady);
-        }
-    }
-
 
 
     private class PlayerListener extends SimpleExoPlayer.DefaultEventListener {

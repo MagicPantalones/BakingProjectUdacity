@@ -4,7 +4,14 @@ import android.content.Context;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Unbinder;
@@ -26,6 +33,25 @@ public class BakingUtils {
                 ((AnimatedVectorDrawable) object).stop();
             }
         }
+    }
+
+    /* Converts the JSON string back to a List<T>. Wanted to try to use T objects. Found solution on
+    how to pass the class to the GSON method from kayz1's answer here:
+    https://stackoverflow.com/questions/14139437/java-type-generic-as-argument-for-gson */
+    public static <T> List<T> jsonToList(Class<T[]> clazz, String data){
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        if (data == null) {
+            return Collections.emptyList();
+        }
+
+        T[] jsonObject =  gson.fromJson(data, clazz);
+
+        return Arrays.asList(jsonObject);
+    }
+
+    public static String listToJson(List<?> data) {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        return gson.toJson(data);
     }
 
     public static void setUniqueTransitionName(View view, Step step) {
