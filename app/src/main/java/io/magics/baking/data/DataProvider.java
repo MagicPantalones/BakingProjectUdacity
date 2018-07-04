@@ -2,32 +2,20 @@ package io.magics.baking.data;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 
 
-import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.magics.baking.MainActivity;
 import io.magics.baking.data.db.RecipeContract;
-import io.magics.baking.data.db.RecipeProvider;
 import io.magics.baking.models.Ingredient;
 import io.magics.baking.models.Recipe;
 import io.magics.baking.models.Step;

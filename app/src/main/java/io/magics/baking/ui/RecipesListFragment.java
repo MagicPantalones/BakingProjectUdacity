@@ -27,6 +27,7 @@ import io.magics.baking.MainActivity;
 import io.magics.baking.R;
 import io.magics.baking.data.RecipeViewModel;
 import io.magics.baking.models.Recipe;
+import io.magics.baking.utils.BakingUtils;
 import io.magics.baking.utils.GlideApp;
 
 
@@ -101,9 +102,10 @@ public class RecipesListFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
+    public void onDetach() {
         viewModel.unregisterObserver(recipeObserver);
-        super.onDestroy();
+        BakingUtils.dispose(unbinder);
+        super.onDetach();
     }
 
     public interface RecipeListener {

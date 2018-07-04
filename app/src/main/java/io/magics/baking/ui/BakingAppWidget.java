@@ -12,7 +12,6 @@ import android.widget.RemoteViews;
 
 import io.magics.baking.MainActivity;
 import io.magics.baking.R;
-import io.magics.baking.data.DataProvider;
 import io.magics.baking.models.Recipe;
 
 /**

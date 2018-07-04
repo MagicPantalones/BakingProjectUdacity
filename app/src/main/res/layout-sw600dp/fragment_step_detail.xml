@@ -207,7 +207,8 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/detail_ingredient_grid"
-                    tools:text="@sample/baking.json/data/steps/shortDescription" />
+                    tools:text="@sample/baking.json/data/steps/shortDescription"
+                    tools:ignore="InconsistentLayout" />
 
                 <TextView
                     android:id="@+id/step_long_description"

@@ -173,7 +173,7 @@ public class RecipeIngredientsFragment extends Fragment {
     }
 
     public interface StepListListener {
-        void onStepClicked(View view, Recipe recipe, int pos);
+        void onStepClicked(Recipe recipe, int pos);
     }
 
 
@@ -225,7 +225,7 @@ public class RecipeIngredientsFragment extends Fragment {
             holder.itemView.setOnClickListener(v -> {
                 BakingUtils.setUniqueTransitionName(holder.itemView, step);
                 if (stepListListener != null) {
-                    stepListListener.onStepClicked(holder.itemView, recipe, position);
+                    stepListListener.onStepClicked(recipe, position);
                 }
             });
         }

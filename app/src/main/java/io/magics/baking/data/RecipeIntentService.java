@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Context;
-import android.database.Cursor;
 
 import io.magics.baking.R;
 import io.magics.baking.models.Recipe;

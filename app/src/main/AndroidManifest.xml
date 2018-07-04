@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="io.magics.baking">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -24,7 +25,8 @@
         <provider
             android:authorities="io.magics.baking.data.db.RecipeProvider"
             android:name="io.magics.baking.data.db.generated.RecipeProvider"
-            android:exported="true"/>
+            android:exported="true"
+            tools:ignore="ExportedContentProvider" />
         
         <activity android:name=".DetailActivity" />
 

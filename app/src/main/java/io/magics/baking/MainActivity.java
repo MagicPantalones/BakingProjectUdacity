@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements RecipesListFragme
     }
 
     @Override
-    public void onStepClicked(View view, Recipe recipe, int pos) {
+    public void onStepClicked(Recipe recipe, int pos) {
 
         if (!twoPane) {
             setStepIndex(pos);
