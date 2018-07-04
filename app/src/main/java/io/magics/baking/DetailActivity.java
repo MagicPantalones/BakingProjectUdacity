@@ -77,7 +77,7 @@ public class DetailActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onStepClicked(View view, Recipe recipe, int pos) {
+    public void onStepClicked(Recipe recipe, int pos) {
 
             Step step = recipe.getSteps().get(pos);
             StepDetailFragment fragment = StepDetailFragment.newInstance(step,
